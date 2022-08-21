@@ -60,5 +60,5 @@ jobs:
           file: ./Dockerfile
           push: true
           tags: pavelgq/app:${{ github.ref_name }}
-      - name: Add comment to tickert
-        run: ./scenarios/buildDocker
+      - name: Add comment to ticket
+        run: ./scenarios/buildDocker.js
