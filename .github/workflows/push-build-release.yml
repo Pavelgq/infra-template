@@ -41,7 +41,8 @@ jobs:
           node ./scenarios/Release.js
   docker:
     needs: release
-    env: NODE_ENV=production
+    env: 
+      NODE_ENV: production
     steps:
       - name: Checkout
         uses: actions/checkout@v2
