@@ -21,7 +21,7 @@ jobs:
     steps:
       - name: build-app
         run: |
-          npm ci
+          npm install
   test:
     needs: install
     runs-on: ubuntu-latest
