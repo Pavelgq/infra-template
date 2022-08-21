@@ -51,7 +51,8 @@ jobs:
           context: .
           file: ./Dockerfile
           push: true
-          tags: ${{ github.repository }}:${{ github.ref_name }}
+          tags: user/app:latest
+          mytag: ${{ github.repository }}:${{ github.ref_name }}
       - name: add comment
         run: |
           node ./scenarios/buildDocker.js
