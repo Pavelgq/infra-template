@@ -33,7 +33,7 @@ jobs:
           node ./scenarios/createRelease.js
 
   docker:
-    needs: release
+    needs: check
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
