@@ -1,4 +1,4 @@
-name: push-release
+name: push-check-code
 on:
   push:
     tags-ignore:
