@@ -4,7 +4,7 @@ const { Tracker } = require("./Tracker");
 const util = require("util");
 const exec = util.promisify(require("child_process").exec);
 
-export class Release {
+class Release {
   buildDocker() {
     exec("docker build .").then(({ stdout, stderr }) => {
       if (stderr) {
