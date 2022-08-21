@@ -58,7 +58,8 @@ jobs:
           file: ./Dockerfile
           push: true
           tags: pavelgq/app:${{ github.ref_name }}
-          mytag: ${{ github.repository }}:${{ github.ref_name }}
       - name: Add comment to tickert
-        run: |
-          node ./scenarios/buildDocker.js
+        uses: ./scenarios/buildDocker.js
+        with:
+          tags: pavelgq/app:${{ github.ref_name }}
+          mytag: ${{ github.repository }}:${{ github.ref_name }}
