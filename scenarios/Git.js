@@ -39,7 +39,7 @@ class Git {
    */
   async getTagHash(tag) {
     const result = await exec(`git rev-parse '${tag}'`);
-    this.loger(`get hash from tag: ${tag} - ${result}`);
+    this.loger(`get hash from tag: ${tag} - ${result.stdout.trim("\n")}`);
     return result.stdout.trim("\n");
   }
 
@@ -51,14 +51,14 @@ class Git {
    * @param {[tagHash, tagHash]} tagsHash
    * @returns
    */
-  static async getCommits(format, count = 0, currentTag, tagsHash) {
+  async getCommits(format, count = 0, currentTag, tagsHash) {
     const command = `git log --pretty=format:'${format}' ${
       count > 0 ? `--max-count=${count}` : ""
     } ${!currentTag ? "--reverse" : ""} ${tagsHash[0]}${
       currentTag ? "..." + tagsHash[1] : ""
     }`;
     const result = await exec(command);
-    this.loger(`log ${result}`);
+    this.loger(`log ${result.stdout}`);
     return result.stdout;
   }
 

@@ -6,53 +6,111 @@ const fetch = require("node-fetch");
 const fetchDefaultHeaders = {
   Authorization: `OAuth ${process.env.OAUTH_TOKEN}`,
   "X-Org-ID": `${process.env.X_ORG_ID}`,
+  "Content-Type": "application/json",
 };
 
 class Tracker {
   async findTicket() {
-    const data = await fetch(`${BASE_URL}/v2/issues/_search`, {
-      method: METHODS.POST,
-      headers: fetchDefaultHeaders,
-      data: {
-        filter: {
-          key: process.env.TICKET_ID,
-        },
-      },
-    });
-    if (!data.length) {
-      this.loger("ticket not found");
-      return null;
+    try {
+      const response = await fetch(`${BASE_URL}/v2/issues/_search`, {
+        method: METHODS.POST,
+        headers: fetchDefaultHeaders,
+        body: JSON.stringify({
+          filter: {
+            key: process.env.TICKET_ID,
+          },
+        }),
+      });
+      const data = await response.json();
+      if (!data.length) {
+        this.loger("ticket not found");
+        return null;
+      }
+      this.loger(JSON.stringify(data[0].summary));
+      return data[0];
+    } catch (error) {
+      this.loger(error, true);
     }
-    return data[0];
   }
   async createTicket(tag, author, changes) {
-    this.loger("create new ticket");
-    await fetch(`${BASE_URL}/v2/issues/`, {
-      method: "POST",
-      headers: fetchDefaultHeaders,
-      data: await this.setTicketData(tag, author, changes),
-    });
+    try {
+      this.loger("create new ticket");
+      await fetch(`${BASE_URL}/v2/issues/`, {
+        method: METHODS.POST,
+        headers: fetchDefaultHeaders,
+        body: this.setTicketData(tag, author, changes),
+      });
+    } catch (error) {
+      this.loger(error, true);
+    }
   }
   async updateTicket(key, tag, author, changes) {
-    this.loger(`update ticket with key: ${key}`);
-    await fetch(`${BASE_URL}/v2/issues/{key}`, {
-      method: "PATCH",
-      headers: fetchDefaultHeaders,
-      data: await this.setTicketData(tag, author, changes),
-    });
+    try {
+      const data = this.setTicketData(tag, author, changes);
+      this.loger(`update ticket with key: ${key}`);
+      this.loger(JSON.stringify(data));
+      await fetch(`${BASE_URL}/v2/issues/{key}`, {
+        method: METHODS.PATCH,
+        headers: fetchDefaultHeaders,
+        body: JSON.stringify(data),
+      });
+    } catch (error) {
+      this.loger(error, true);
+    }
   }
 
-  async setTicketData(tag, author, changes) {
+  setTicketData(tag, author, changes) {
     const date = new Date(Date.now()).toLocaleDateString("ru-RU");
-    const description = `Автор: ${author}\nДата релиза: ${date}\nВерсия: ${tag}\nИзменения:\n${changes}`;
+    const description = `Ответственный за релиз: ${author}\nКоммиты, попавшие в релиз:\n${changes}`;
     this.loger(`create ticket data for ${`Релиз №${tag.split("-")[1]}`}`);
     this.loger(`${description}`);
     return {
-      summary: `Релиз №${tag.split("-")[1]}`,
+      summary: `Релиз №${tag.split("-")[1]} ${date}`,
       description,
       queue: "INFRA",
-      unique: `${process.env.ORG_ID}_${tag}`,
     };
+  }
+
+  async createComment(key, comment) {
+    try {
+      this.loger("create new comment");
+      await fetch(`${BASE_URL}/v2/issues/${key}/comments`, {
+        method: METHODS.POST,
+        headers: fetchDefaultHeaders,
+        body: JSON.stringify({
+          text: comment,
+        }),
+      });
+    } catch (error) {
+      this.loger(error, true);
+    }
+  }
+
+  async getComments(key) {
+    try {
+      this.loger("create new ticket");
+      const response = await fetch(`${BASE_URL}/v2/issues/${key}/comments`, {
+        method: METHODS.GET,
+        headers: fetchDefaultHeaders,
+      });
+      const data = await response.json();
+      console.log(data);
+      return data;
+    } catch (error) {
+      this.loger(error, true);
+    }
+  }
+
+  async deleteComment(key, commentId) {
+    try {
+      this.loger("create new ticket");
+      await fetch(`${BASE_URL}/v2/issues/${key}/comments/${commentId}`, {
+        method: METHODS.DELETE,
+        headers: fetchDefaultHeaders,
+      });
+    } catch (error) {
+      this.loger(error, true);
+    }
   }
 
   loger(message, error) {

@@ -1,0 +1,38 @@
+name: push-build-release
+on: push  
+name: build, lint, test and publish  
+jobs:
+  setup:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v3
+        with:
+          node-version: "16.x"
+  build:
+    needs: setup
+    run: |
+      npm install
+  test:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - run: npm run test
+  lint: 
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - run: npm run lint
+  release:
+    needs: test
+    env:
+      OAUTH_TOKEN: ${{ secrets.OAUTH_TOKEN }}
+      X_ORG_ID: ${{ secrets.X_ORG_ID }}
+      TICKET_ID: ${{ secrets.TICKET_ID }}
+    run: |
+      node ./scenarios/Release.js
+  docker:
+    needs: release
+    run: 
