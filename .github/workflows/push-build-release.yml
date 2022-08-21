@@ -17,6 +17,7 @@ jobs:
           node-version: "16.x"
   install:
     needs: setup
+    runs-on: ubuntu-latest
     steps:
       - name: build-app
         run: |
@@ -33,6 +34,7 @@ jobs:
       - run: npm run lint
   release:
     needs: test
+    runs-on: ubuntu-latest
     env:
       OAUTH_TOKEN: ${{ secrets.OAUTH_TOKEN }}
       X_ORG_ID: ${{ secrets.X_ORG_ID }}
@@ -43,6 +45,7 @@ jobs:
           node ./scenarios/Release.js
   docker:
     needs: release
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v2
