@@ -6,7 +6,7 @@ on:
     tags:
       - rc-[0-9]+.[0-9]+.[0-9]+
 jobs:
-  setup:
+  check:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -15,34 +15,29 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: "16.x"
-  install:
-    needs: setup
-    runs-on: ubuntu-latest
-    steps:
       - name: build-app
         run: |
-          npm install
-  test:
-    needs: install
-    runs-on: ubuntu-latest
-    steps:
-      - run: npm run test
-  lint:
-    needs: install
-    runs-on: ubuntu-latest
-    steps:
-      - run: npm run lint
+          npm ci
+      - name: tsc
+        run: npm run ts
+      - name: test
+        run: npm run test
+      - name: lint
+        run: npm run lint
+
   release:
-    needs: test
+    needs: check
     runs-on: ubuntu-latest
     env:
       OAUTH_TOKEN: ${{ secrets.OAUTH_TOKEN }}
       X_ORG_ID: ${{ secrets.X_ORG_ID }}
       TICKET_ID: ${{ secrets.TICKET_ID }}
     steps:
+      - uses: actions/checkout@v3
       - name: set ticket
         run: |
           node ./scenarios/Release.js
+
   docker:
     needs: release
     runs-on: ubuntu-latest
