@@ -1,7 +1,7 @@
 const util = require("util");
 const exec = util.promisify(require("child_process").exec);
 
-export class Git {
+class Git {
   /**
    * Проверки git
    * @returns
@@ -69,4 +69,5 @@ export class Git {
   }
 }
 
+module.exports = Git;
 //TODO: Если тег один, то берем все коммиты до него

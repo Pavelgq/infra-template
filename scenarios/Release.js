@@ -1,5 +1,5 @@
-import { Git } from "./Git";
-import { Tracker } from "./Tracker";
+const { Git } = require("./Git");
+const { Tracker } = require("./Tracker");
 
 const util = require("util");
 const exec = util.promisify(require("child_process").exec);

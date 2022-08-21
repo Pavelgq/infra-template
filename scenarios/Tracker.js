@@ -1,5 +1,4 @@
-import { BASE_URL, METHODS } from "./constants";
-
+const { BASE_URL, METHODS } = require("./constants");
 require("dotenv").config();
 
 const fetch = require("node-fetch");
@@ -9,7 +8,7 @@ const fetchDefaultHeaders = {
   "X-Org-ID": `${process.env.X_ORG_ID}`,
 };
 
-export class Tracker {
+class Tracker {
   async findTicket() {
     const data = await fetch(`${BASE_URL}/v2/issues/_search`, {
       method: METHODS.POST,
@@ -62,3 +61,5 @@ export class Tracker {
       : console.log(`Tracker: ${message}`);
   }
 }
+
+module.exports = Tracker;
