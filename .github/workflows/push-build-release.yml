@@ -1,7 +1,8 @@
 name: push-build-release
-on: push  
-  tags:
-      - rc-[0-9]+.[0-9]+.[0-9]+
+on: 
+  push:  
+    tags:
+        - rc-[0-9]+.[0-9]+.[0-9]+
 name: release  
 jobs:
   setup:
