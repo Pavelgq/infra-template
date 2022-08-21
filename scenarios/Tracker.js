@@ -88,7 +88,7 @@ class Tracker {
 
   async getComments(key) {
     try {
-      this.loger("create new ticket");
+      this.loger("get tickets");
       const response = await fetch(`${BASE_URL}/v2/issues/${key}/comments`, {
         method: METHODS.GET,
         headers: fetchDefaultHeaders,
@@ -101,10 +101,10 @@ class Tracker {
     }
   }
 
-  async deleteComment(key, commentId) {
+  async deleteComment(id, commentId) {
     try {
-      this.loger(`delete ticket ${key} comment: ${commentId}`);
-      await fetch(`${BASE_URL}/v2/issues/${key}/comments/${commentId}`, {
+      this.loger(`delete ticket ${id} comment: ${commentId}`);
+      await fetch(`${BASE_URL}/v2/issues/${id}/comments/${commentId}`, {
         method: METHODS.DELETE,
         headers: fetchDefaultHeaders,
       });

@@ -21,13 +21,13 @@ class Release {
       const comments = await tracker.getComments(currentTicket.key);
       if (comments.length) {
         comments.forEach(async (comment) => {
-          await tracker.deleteComment(currentTicket.key, comment.id);
+          await tracker.deleteComment(currentTicket.id, comment.id);
         });
       }
       console.log(core);
       await tracker.createComment(
         currentTicket.key,
-        `Собрали образ в тегом ${core.mytag}`
+        `Собрали образ в тегом: ${core.mytag}`
       );
     }
   }
