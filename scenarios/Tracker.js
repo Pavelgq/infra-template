@@ -46,10 +46,11 @@ class Tracker {
   }
   async updateTicket(key, tag, author, changes) {
     try {
+      console.log(fetchDefaultHeaders);
       const data = this.setTicketData(tag, author, changes);
       this.loger(`update ticket with key: ${key}`);
       this.loger(JSON.stringify(data));
-      await fetch(`${BASE_URL}/v2/issues/{key}`, {
+      await fetch(`${BASE_URL}/v2/issues/${key}`, {
         method: METHODS.PATCH,
         headers: fetchDefaultHeaders,
         body: JSON.stringify(data),
