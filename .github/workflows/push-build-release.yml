@@ -1,9 +1,8 @@
 name: push-build-release
-on: 
-  push:  
+on:
+  push:
     tags:
-        - rc-[0-9]+.[0-9]+.[0-9]+
-name: release  
+      - rc-[0-9]+.[0-9]+.[0-9]+
 jobs:
   setup:
     runs-on: ubuntu-latest
@@ -23,7 +22,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - run: npm run test
-  lint: 
+  lint:
     needs: build
     runs-on: ubuntu-latest
     steps:
@@ -38,4 +37,4 @@ jobs:
       node ./scenarios/Release.js
   docker:
     needs: release
-    run: 
+    run:
