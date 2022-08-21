@@ -27,7 +27,7 @@ class Release {
       console.log(core);
       await tracker.createComment(
         currentTicket.key,
-        `Собрали образ в тегом: ${core.mytag}`
+        `Собрали образ в тегом ${core.getInput("mytag")}`
       );
     }
   }

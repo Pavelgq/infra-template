@@ -23,12 +23,15 @@ class Git {
    */
   async getPrevTags() {
     const gitTags = (await exec("git tag")).stdout;
-    const tags = gitTags.split(/\r?\n/).reverse().filter(Boolean);
+    const tags = gitTags
+      .split(/\r?\n/)
+      .sort((a, b) => Number(b.split(".")[2]) - Number(a.split(".")[2]))
+      .filter(Boolean);
     if (!tags[0]) {
       this.loger("No required tags", true);
       return null;
     }
-    this.loger(`get current and previous tags`);
+    this.loger(`get current ${tags[0]} and previous tags ${tags[1]}`);
     return [tags[0], tags[1]];
   }
 
