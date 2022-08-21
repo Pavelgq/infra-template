@@ -18,6 +18,6 @@ jobs:
       - name: lint
         run: |
           npm run lint
-      - name: lint
+      - name: test
         run: |
           npm run test

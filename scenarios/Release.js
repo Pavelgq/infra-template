@@ -1,3 +1,4 @@
+const core = require("@actions/core");
 const Git = require("./Git");
 const Tracker = require("./Tracker");
 
@@ -5,21 +6,30 @@ const util = require("util");
 const exec = util.promisify(require("child_process").exec);
 
 class Release {
-  buildDocker() {
-    exec("docker build .").then(({ stdout, stderr }) => {
-      if (stderr) {
-        console.error(stderr);
+  async buildDocker() {
+    const git = new Git();
+
+    if (!git.isGit()) return;
+
+    const tracker = new Tracker();
+
+    const [currentTag] = await git.getPrevTags();
+
+    let currentTicket = await tracker.findTicket(currentTag);
+
+    if (currentTicket) {
+      const comments = await tracker.getComments(currentTicket.key);
+      if (comments.length) {
+        comments.forEach(async (comment) => {
+          await tracker.deleteComment(currentTicket.key, comment.id);
+        });
       }
-      console.log(stdout);
-    });
-  }
-  checkTests() {
-    exec("npx jest").then(({ stdout, stderr }) => {
-      if (stderr) {
-        console.error(stderr);
-      }
-      console.log(stdout);
-    });
+      console.log(core);
+      await tracker.createComment(
+        currentTicket.key,
+        `Собрали образ в тегом ${core.tags}`
+      );
+    }
   }
 
   async run() {
@@ -57,4 +67,4 @@ class Release {
   }
 }
 
-new Release().run();
+module.exports = Release;

@@ -103,7 +103,7 @@ class Tracker {
 
   async deleteComment(key, commentId) {
     try {
-      this.loger("create new ticket");
+      this.loger(`delete ticket ${key} comment: ${commentId}`);
       await fetch(`${BASE_URL}/v2/issues/${key}/comments/${commentId}`, {
         method: METHODS.DELETE,
         headers: fetchDefaultHeaders,
