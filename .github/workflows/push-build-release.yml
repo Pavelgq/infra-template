@@ -1,6 +1,8 @@
 name: push-build-release
 on: push  
-name: build, lint, test and publish  
+  tags:
+      - rc-[0-9]+.[0-9]+.[0-9]+
+name: release  
 jobs:
   setup:
     runs-on: ubuntu-latest
