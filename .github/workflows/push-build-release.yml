@@ -19,16 +19,16 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: "16.x"
-      - name: build-app
+      - name: Install dependency
         run: |
           npm ci
-      - name: tsc
+      - name: Tsc
         run: npm run ts
-      - name: test
+      - name: Test
         run: npm run test
-      - name: lint
+      - name: Lint
         run: npm run lint
-      - name: set ticket
+      - name: Update ticket
         run: |
           node ./scenarios/createRelease.js
 
@@ -41,7 +41,7 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: "16.x"
-      - name: build-app
+      - name: Install dependency
         run: |
           npm ci
       - name: Login to Docker Hub
@@ -57,8 +57,8 @@ jobs:
           context: .
           file: ./Dockerfile
           push: true
-          tags: pavelgq/app:latest
+          tags: pavelgq/app:${{ github.ref_name }}
           mytag: ${{ github.repository }}:${{ github.ref_name }}
-      - name: add comment
+      - name: Add comment to tickert
         run: |
           node ./scenarios/buildDocker.js

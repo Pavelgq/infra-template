@@ -73,7 +73,7 @@ class Tracker {
 
   async createComment(key, comment) {
     try {
-      this.loger("create new comment");
+      this.loger(`create new comment for ${key}`);
       await fetch(`${BASE_URL}/v2/issues/${key}/comments`, {
         method: METHODS.POST,
         headers: fetchDefaultHeaders,
@@ -94,7 +94,6 @@ class Tracker {
         headers: fetchDefaultHeaders,
       });
       const data = await response.json();
-      console.log(data);
       return data;
     } catch (error) {
       this.loger(error, true);

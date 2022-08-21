@@ -7,15 +7,9 @@ const exec = util.promisify(require("child_process").exec);
 
 class Release {
   async buildDocker() {
-    const git = new Git();
-
-    if (!git.isGit()) return;
-
     const tracker = new Tracker();
 
-    const [currentTag] = await git.getPrevTags();
-
-    let currentTicket = await tracker.findTicket(currentTag);
+    let currentTicket = await tracker.findTicket();
 
     if (currentTicket) {
       const comments = await tracker.getComments(currentTicket.key);
@@ -24,10 +18,10 @@ class Release {
           await tracker.deleteComment(currentTicket.id, comment.id);
         });
       }
-      console.log(core);
+      console.log(core.getInput("mytag"), core.getInput("tags"));
       await tracker.createComment(
         currentTicket.key,
-        `Собрали образ в тегом ${core.getInput("mytag")}`
+        `Собрали образ в тегом ${core.getInput("tags")}`
       );
     }
   }
@@ -44,7 +38,7 @@ class Release {
     let currentHashTag = currentTag ? await git.getTagHash(currentTag) : null;
     let prevHashTag = prevTag ? await git.getTagHash(prevTag) : null;
 
-    let currentTicket = await tracker.findTicket(currentTag);
+    let currentTicket = await tracker.findTicket();
 
     const author = await git.getCommits("%aN <%aE>", 1, currentTag, [
       currentHashTag,
