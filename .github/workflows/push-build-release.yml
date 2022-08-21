@@ -41,8 +41,6 @@ jobs:
           node ./scenarios/Release.js
   docker:
     needs: release
-    env: 
-      NODE_ENV: production
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -60,6 +58,6 @@ jobs:
           file: ./Dockerfile
           push: true
           tags: ${{ github.repository }}:${{ github.ref_name }}
-       - name: add comment
+      - name: add comment
         run: |
           node ./scenarios/Docker.js
