@@ -1,0 +1,41 @@
+name: push-release
+on:
+  push:
+    tags:
+      - rc-[0-9]+.[0-9]+.[0-9]+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version: "16.x"
+
+      - name: Build
+        env:
+          OAUTH_TOKEN: ${{ secrets.OAUTH_TOKEN }}
+          X_ORG_ID: ${{ secrets.X_ORG_ID }}
+          TICKET_ID: ${{ secrets.TICKET_ID }}
+        run: |
+          npm install
+          node ./scenarios/Release.js
+
+# jobs:
+#   setup:
+#     runs-on: ubuntu-latest
+#     steps:
+#       - run: ./setup_server.sh
+#   build:
+#     needs: setup
+#     runs-on: ubuntu-latest
+#     steps:
+#       - run: ./build_server.sh
+#   test:
+#     needs: build
+#     runs-on: ubuntu-latest
+#     steps:
+#       - run: ./test_server.sh
