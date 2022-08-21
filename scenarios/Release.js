@@ -1,15 +1,14 @@
-const core = require("@actions/core");
 const Git = require("./Git");
 const Tracker = require("./Tracker");
-
-const util = require("util");
-const exec = util.promisify(require("child_process").exec);
 
 class Release {
   async buildDocker() {
     const tracker = new Tracker();
+    const git = new Git();
 
     let currentTicket = await tracker.findTicket();
+
+    const [currentTag] = await git.getPrevTags();
 
     if (currentTicket) {
       const comments = await tracker.getComments(currentTicket.key);
@@ -18,10 +17,9 @@ class Release {
           await tracker.deleteComment(currentTicket.id, comment.id);
         });
       }
-      console.log(core.getInput("mytag"), core.getInput("tags"));
       await tracker.createComment(
         currentTicket.key,
-        `Собрали образ в тегом ${core.getInput("tags")}`
+        `Собрали образ в тегом pavelgq/app:${currentTag}`
       );
     }
   }
