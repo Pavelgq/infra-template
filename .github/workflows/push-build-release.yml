@@ -8,6 +8,10 @@ on:
 jobs:
   check:
     runs-on: ubuntu-latest
+    env:
+      OAUTH_TOKEN: ${{ secrets.OAUTH_TOKEN }}
+      X_ORG_ID: ${{ secrets.X_ORG_ID }}
+      TICKET_ID: ${{ secrets.TICKET_ID }}
     steps:
       - uses: actions/checkout@v3
         with:
@@ -24,16 +28,6 @@ jobs:
         run: npm run test
       - name: lint
         run: npm run lint
-
-  release:
-    needs: check
-    runs-on: ubuntu-latest
-    env:
-      OAUTH_TOKEN: ${{ secrets.OAUTH_TOKEN }}
-      X_ORG_ID: ${{ secrets.X_ORG_ID }}
-      TICKET_ID: ${{ secrets.TICKET_ID }}
-    steps:
-      - uses: actions/checkout@v3
       - name: set ticket
         run: |
           node ./scenarios/createRelease.js
